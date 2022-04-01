@@ -9,7 +9,6 @@ const getAll = async () => {
 const findById = async (id) => {
   const sale = await salesModel.findById(id);
 
-  console.log(sale);
   return sale;
 };
 
