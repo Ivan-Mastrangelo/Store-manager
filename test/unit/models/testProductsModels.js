@@ -39,7 +39,7 @@ describe('testar se as funções da camada productModels estão operacionais', (
 
   describe('Buscar produto pelo id passado', () => {
     before(() => {
-      sinon.stub(connection, 'execute').resolves([myObject[0]]);
+      sinon.stub(connection, 'execute').resolves([myObject]);
     });
     after(() => {
       connection.execute.restore();
@@ -49,8 +49,6 @@ describe('testar se as funções da camada productModels estão operacionais', (
 
       expect(result).to.be.an('object');
       expect(result).to.include.all.keys('id', 'name', 'quantity');
-      expect(result.id).to.be.equal(1);
     });
   });
-  
 });
