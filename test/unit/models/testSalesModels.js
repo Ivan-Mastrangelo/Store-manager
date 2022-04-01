@@ -68,4 +68,9 @@ describe('testar se as funções da camada salesModel estão operacionais', () =
       expect(result).to.be.equal(null);
     })
   })
+  // describe('Ao inserir corretamente um produto no BD', async () => {
+  //   const productInsert = {
+      
+  //   }
+  // })
 });
