@@ -16,10 +16,15 @@ const findById = async (req, res) => {
 };
 
 const create = async (req, res) => {
-  const { name, quantity } = req.body;
-  const newProduct = await productService.create({ name, quantity });
+  try {
+    const { name, quantity } = req.body;
+    const newProduct = await productService.create({ name, quantity });
   
   return res.status(201).json(newProduct);
+  } catch (error) {
+    console.log(error.message);
+    return res.status(409).json({ message: error.message });
+  }
 };
 
 module.exports = {
