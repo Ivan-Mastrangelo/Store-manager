@@ -2,10 +2,11 @@ const { expect } = require('chai');
 const productModel = require('../../../models/productModel');
 const connection = require('../../../models/connection');
 const sinon = require('sinon');
+const req = require('express/lib/request');
 
 describe('testar se as funções da camada productModels estão operacionais', () => {
   describe('testar as funções das rotas de consulta', () => {
-    const myObject =  [
+    const myArray =  [
       {
         id: 1,
         name: "produto A",
@@ -21,7 +22,7 @@ describe('testar se as funções da camada productModels estão operacionais', (
     describe('testar se busca todos os produtos cadastrados', () => {
       
       before(() => {
-        sinon.stub(connection, 'execute').resolves([myObject]);
+        sinon.stub(connection, 'execute').resolves([myArray]);
       });
       after(() => {
         connection.execute.restore();
@@ -40,7 +41,7 @@ describe('testar se as funções da camada productModels estão operacionais', (
   
     describe('Buscar produto pelo id passado', () => {
       before(() => {
-        sinon.stub(connection, 'execute').resolves([myObject]);
+        sinon.stub(connection, 'execute').resolves([myArray]);
       });
       after(() => {
         connection.execute.restore();
@@ -55,7 +56,7 @@ describe('testar se as funções da camada productModels estão operacionais', (
   });
   describe('testar rotas de cadastro e atualização', () => {
 
-    const newProduct = {
+    const theProduct = {
       name: 'produto',
       quantity: 10,
     };
@@ -69,19 +70,39 @@ describe('testar se as funções da camada productModels estão operacionais', (
         connection.execute.restore();
       });
       it('Verifica se o retorno é de um objeto como o esperado', async () => {
-        const result = await productModel.create(newProduct);
+        const result = await productModel.create(theProduct);
   
         expect(result).to.be.a('object')
       });
   
       it('Verifica se o id foi inserido e as demais chaves no novo objeto', async () => {
-        const result = await productModel.create(newProduct);
+        const result = await productModel.create(theProduct);
   
         expect(result).to.include.all.keys('id', 'name', 'quantity');
       });
     });
-    describe('testar em caso de requisição invlaida por nome repetido', () => {
-      
+    describe('testar a camada productModel ao Atualizar um produto no BD com sucesso', () => {
+      const prodUpdate = {
+        id: 1,
+        name: 'produto',
+        quantity: 9,
+      }
+
+      before(() => {
+        sinon.stub(connection, 'execute').resolves(prodUpdate);
+      });
+      after(() => {
+        connection.execute.restore();
+      });
+      it('Verificar se o valor foi inserido', async () => {
+        const result = await productModel.update(prodUpdate);
+        console.log(result);
+        expect(result).to.be.a('object');
+        expect(result).to.include.all.keys('id', 'name', 'quantity');
+        expect(result.id).to.be.equal(prodUpdate.id);
+        expect(result.name).to.be.equal(prodUpdate.name);
+        expect(result.quantity).to.be.equal(prodUpdate.quantity);
+      })
     })
   });
 });
