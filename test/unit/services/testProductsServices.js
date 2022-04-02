@@ -2,8 +2,22 @@ const { expect } = require('chai');
 const productModel = require('../../../models/productModel');
 const productService = require('../../../services/productService');
 const sinon = require('sinon');
+const { boolean } = require('joi');
+const createValidate = require('../../../helpers/createValidate');
 
 describe('verifica se as func. da service estão operacionais', () => {
+  const myArray =  [
+    {
+      id: 1,
+      name: "produto A",
+      quantity: 10
+    },
+    {
+      id: 2,
+      name: "produto B",
+      quantity: 20
+    }
+  ];
   describe('testar as funções das rotas de consulta', () => {
     const myArray =  [
       {
@@ -73,5 +87,29 @@ describe('verifica se as func. da service estão operacionais', () => {
         expect(result).to.include.all.keys('id', 'name', 'quantity');
       });
     });
+    describe('Testar casos de erro de validação ao inserir nov produto', () => {
+      const badProduct = {};
+      before(() => {
+        // sinon.stub(productModel, 'getAll').resolves(newProduct);
+        sinon.stub(productModel, 'create').resolves(false);
+        sinon.stub(createValidate, 'createValid').resolves(false);
+        // sinon.stub(productService, 'create').resolves(Error);
+      });
+      after(() => {
+        // productModel.getAll.restore();
+        productModel.create.restore();
+        createValidate.createValid.restore();
+        // productService.create.restore();
+      });
+      it('Testar ', async () => {
+        const result = await productService.create(newProduct);
+        console.log(result);
+        expect(result).to.be.equal(false);
+      })
+      it('Testar se nome inválido na requisição retorna mensagem de erro', async () => {
+        const teste = await createValidate.createValid(newProduct.name);
+        
+      })
+    })
   });
 });
