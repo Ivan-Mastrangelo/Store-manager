@@ -1,4 +1,5 @@
 const productModel = require('../models/productModel');
+const { createValid } = require('../helpers/createValidate');
 
 const getAll = async () => {
   const products = await productModel.getAll();
@@ -15,8 +16,11 @@ const findById = async (id) => {
 };
 
 const create = async ({ name, quantity }) => {
+  const check = await createValid(name);
+  if (check === false) throw Error('Product already exists');
+
   const newProduct = await productModel.create({ name, quantity });
-                                      
+                                       
   return newProduct;
 };
 
