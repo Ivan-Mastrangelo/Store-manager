@@ -22,7 +22,6 @@ const create = async (req, res) => {
   
   return res.status(201).json(newProduct);
   } catch (error) {
-    console.log(error.message);
     return res.status(409).json({ message: error.message });
   }
 };
