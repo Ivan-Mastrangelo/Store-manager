@@ -88,26 +88,24 @@ describe('verifica se as func. da service estão operacionais', () => {
       });
     });
     describe('Testar casos de erro de validação ao inserir nov produto', () => {
-      const badProduct = {};
+      const oldProduct = {
+        id: 1,
+        name: "Martelo de Thor",
+        quantity: 10
+      }
       before(() => {
-        // sinon.stub(productModel, 'getAll').resolves(newProduct);
-        sinon.stub(productModel, 'create').resolves(false);
-        sinon.stub(createValidate, 'createValid').resolves(false);
-        // sinon.stub(productService, 'create').resolves(Error);
+        sinon.stub(productModel, 'findById').resolves(true);
       });
       after(() => {
-        // productModel.getAll.restore();
-        productModel.create.restore();
-        createValidate.createValid.restore();
-        // productService.create.restore();
+        productModel.findById.restore();
       });
       it('Testar ', async () => {
-        const result = await productService.create(newProduct);
+        const result = await productService.create(oldProduct);
         console.log(result);
-        expect(result).to.be.equal(false);
+        expect(result).to.be.equal({ message: 'Product already exists'});
       })
       it('Testar se nome inválido na requisição retorna mensagem de erro', async () => {
-        const teste = await createValidate.createValid(newProduct.name);
+        // const teste = await createValidate.createValid(newProduct.name);
         
       })
     })

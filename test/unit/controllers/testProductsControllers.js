@@ -83,16 +83,15 @@ describe('verifica se as func. da camada controller estão operacionais', () => 
     });
   });
   describe('testar rotas de cadastro e atualização', () => {
+    const newProduct = {
+      id: 1,
+      name: 'produto',
+      quantity: 10,
+    };
+    const response = {};
+    const request = {};
 
     describe('Testar a função create ao inserir um novo produto com sucesso', () => {
-      const teste = {
-        id: 1,
-        name: 'produto',
-        quantity: 10,
-      };
-      const response = {};
-      const request = {};
-
       before(() => {
         request.body = {
           id: 1,
@@ -101,7 +100,7 @@ describe('verifica se as func. da camada controller estão operacionais', () => 
         };
         response.status = sinon.stub().returns(response);
         response.json = sinon.stub().returns();
-        sinon.stub(productService, 'create').resolves(teste);
+        sinon.stub(productService, 'create').resolves(newProduct);
       });
       after(() => {
         productService.create.restore();
@@ -111,8 +110,29 @@ describe('verifica se as func. da camada controller estão operacionais', () => 
           await productController.create(request, response);
           
           expect(response.status.calledWith(201)).to.be.equal(true);
-          expect(response.json.calledWith(teste)).to.be.equal(true);
+          expect(response.json.calledWith(newProduct)).to.be.equal(true);
       });
     });
+    describe('Quando o produto já existe', () => {
+      before(() => {
+        request.body = {
+          id: 1,
+          name: "Martelo de Thor",
+          quantity: 10,
+        };
+        response.status = sinon.stub().returns(response);
+        response.json = sinon.stub().returns();
+        sinon.stub(productService, 'findById').resolves(true);
+      });
+      after(() => {
+        productService.findById.restore();
+      });
+      it('já já vejo o texto', async () => {
+        await productController.create(request, response);
+          
+        expect(response.status.calledWith(409)).to.be.equal(true);
+        expect(response.json.calledWith({ message: 'Product already exists'})).to.be.equal(true);
+      })
+    })
   });
 });
