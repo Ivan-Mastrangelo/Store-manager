@@ -1,5 +1,5 @@
 const productModel = require('../models/productModel');
-const { createValid } = require('../helpers/createValidate');
+const createValidate = require('../helpers/createValidate');
 
 const getAll = async () => {
   const products = await productModel.getAll();
@@ -16,7 +16,8 @@ const findById = async (id) => {
 };
 
 const create = async ({ name, quantity }) => {
-  const check = await createValid(name);
+  const check = await createValidate(name);
+
   if (check === false) throw Error('Product already exists');
 
   const newProduct = await productModel.create({ name, quantity });
@@ -26,8 +27,22 @@ const create = async ({ name, quantity }) => {
 
 const update = async (product) => {
   const { id, name, quantity } = product;
+  
+  const getProduct = await productModel.findById(id);
+   
+  if (!getProduct) throw Error('Product not found');
+
   const readyUp = await productModel.update({ id, name, quantity });
+
   return readyUp;
+};
+
+const deleteProduct = async (id) => {
+  const getProduct = await productModel.findById(id);
+
+  if (!getProduct) throw Error('Product not found');
+
+  await productModel.deleteProduct(getProduct.id);
 };
 
 module.exports = {
@@ -35,4 +50,5 @@ module.exports = {
   findById,
   create,
   update,
+  deleteProduct,
 };
