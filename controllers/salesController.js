@@ -16,7 +16,32 @@ const findById = async (req, res) => {
   res.status(200).json(sale);
 };
 
+const create = async (req, res) => {
+  try {
+    const { productId, quantity } = req.body;
+    const newSale = await salesService.create({ productId, quantity });
+    return res.status(201).json(newSale);
+  } catch (error) {
+    return res.status(400).json({ message: 'Bad request' });
+  }
+};
+
+const update = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { productId, quantity } = req.body;
+
+    const readyUp = await salesService.update({ id, productId, quantity });
+
+    return res.status(200).json(readyUp);
+  } catch (error) {
+    return res.status(400).json({ message: error.message });
+  }
+};
+
 module.exports = {
   getAll,
   findById,
+  create,
+  update,
 };
