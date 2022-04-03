@@ -35,7 +35,49 @@ const findById = async (id) => {
   return sale.map(serialize);
 };
 
+const create = async ({ productId, quantity }) => {
+const [{ inserId: saleId }] = await connection.execute(`
+INSERT INTO StoreManager.sales (date) VALUES (?), [NOW()];
+`);
+
+await Promise.all(itemsSold.map(async (product_id) => {
+  await connection.execute(`
+  INSERT INTO StoreManager.sales_products
+  (sale_id, product_id, quantity) VALUES (?, ?, ?),
+  [sale_id, productId, quantity];
+  `);
+}));
+
+const sale_id = await salesModel.create({ productId, quantity });
+  return {
+    saleId,
+    itemsSold: [
+      productId,
+      quantity,
+    ],
+  };
+};
+
+const update = async ({ id, productId, quantity }) => {
+  await connection.execute(
+    `UPDATE StoreManager.sales SET 
+      product_id = ?, quantity = ? WHERE id = ?;`,
+      [id, productId, quantity],
+  );
+  return {
+    saleId: id,
+    itemUpdated: [
+      {
+        productId,
+        quantity,
+      },
+    ],
+  };
+};
+
 module.exports = {
   getAll,
   findById,
+  create,
+  update,
 };
