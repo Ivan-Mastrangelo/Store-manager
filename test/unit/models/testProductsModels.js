@@ -96,7 +96,7 @@ describe('testar se as funções da camada productModels estão operacionais', (
       });
       it('Verificar se o valor foi inserido', async () => {
         const result = await productModel.update(prodUpdate);
-        console.log(result);
+        
         expect(result).to.be.a('object');
         expect(result).to.include.all.keys('id', 'name', 'quantity');
         expect(result.id).to.be.equal(prodUpdate.id);

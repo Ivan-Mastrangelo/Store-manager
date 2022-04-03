@@ -4,6 +4,7 @@ const productService = require('../../../services/productService');
 const sinon = require('sinon');
 const { boolean } = require('joi');
 const createValidate = require('../../../helpers/createValidate');
+const connection = require('../../../models/connection');
 
 describe('verifica se as func. da service estão operacionais', () => {
   const myArray =  [
@@ -103,11 +104,25 @@ describe('verifica se as func. da service estão operacionais', () => {
         const result = await productService.create(oldProduct);
         console.log(result);
         expect(result).to.be.equal({ message: 'Product already exists'});
-      })
-      it('Testar se nome inválido na requisição retorna mensagem de erro', async () => {
-        // const teste = await createValidate.createValid(newProduct.name);
-        
-      })
-    })
+      });
+    });
+    describe('Testar a camada productService ao atualizar produto com sucesso', () => {
+      const prodUpdate = {
+        id: 1,
+        name: 'produto',
+        quantity: 9,
+      }
+      before(() => {
+        sinon.stub(productModel, 'findById').resolves(prodUpdate);
+      });
+      after(() => {
+        productModel.findById.restore();
+      });
+      it('Verificar se o objeto retorna com as atualizações', async () => {
+        const result = await productService.update(prodUpdate);
+        console.log(result);
+        expect(result).to.be.a('object');
+      });
+    });
   });
 });
