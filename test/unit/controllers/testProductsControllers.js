@@ -127,12 +127,33 @@ describe('verifica se as func. da camada controller estão operacionais', () => 
       after(() => {
         productService.findById.restore();
       });
-      it('já já vejo o texto', async () => {
+      it('Verificar se retorna o status 409 e a mensagem de erro', async () => {
         await productController.create(request, response);
           
         expect(response.status.calledWith(409)).to.be.equal(true);
         expect(response.json.calledWith({ message: 'Product already exists'})).to.be.equal(true);
       })
     })
+    describe('Testar atualização do produto em caso de sucesso', () => {
+      before(() => {
+        request.params = { id: 1 };
+        request.body = {
+          name: 'produto',
+          quantity: 9,
+        };
+        response.status = sinon.stub().returns(response);
+        response.json = sinon.stub().returns();
+        sinon.stub(productService, 'update').resolves(newProduct);
+      });
+      after(() => {
+        productService.update.restore();
+      });
+      it('Testar se a atualização retorna status e mensagem esperada.', async () => {
+        await productController.update(request, response);
+
+        expect(response.status.calledWith(200)).to.be.equal(true);
+        expect(response.json.calledWith(newProduct)).to.be.equal(true);
+      });
+    });
   });
 });
