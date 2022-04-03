@@ -1,6 +1,6 @@
 const productModel = require('../models/productModel');
 
-const createValid = async (searchname) => {
+const createValidate = async (searchname) => {
   const allProducts = await productModel.getAll();
   const checkName = allProducts.find((product) => product.name === searchname);
 
@@ -9,6 +9,4 @@ const createValid = async (searchname) => {
   return false;
 };
 
-module.exports = {
-  createValid,
-};
+module.exports = createValidate;
