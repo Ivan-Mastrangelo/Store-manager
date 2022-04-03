@@ -105,4 +105,24 @@ describe('testar se as funções da camada productModels estão operacionais', (
       })
     })
   });
+  describe('Testar a rota de exclusão de produtos', () => {
+    const oldProduct = {
+      id: 1,
+      name: 'Martelo do Thor',
+      quantity: 10,
+    }
+    describe('Testar quando há produto para exclusão', () => {
+      before(() => {
+        sinon.stub(connection, 'execute').resolves(oldProduct);
+      });
+      after(() => {
+        connection.execute.restore();
+      });
+      it('Verificar se o produto foi excluído da base', async () => {
+        const result = await productModel.deleteProduct(oldProduct);
+        
+        expect(result).to.be.equal(undefined)
+      })
+    })
+  })
 });

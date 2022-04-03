@@ -155,5 +155,83 @@ describe('verifica se as func. da camada controller estão operacionais', () => 
         expect(response.json.calledWith(newProduct)).to.be.equal(true);
       });
     });
+    describe('Verificar se produto não existir na base', () => {
+      before(() => {
+        request.params = { id: 5 }
+        request.body = {
+          name: "Martelo de Thor",
+          quantity: 10,
+        };
+        response.status = sinon.stub().returns(response);
+        response.json = sinon.stub().returns();
+        sinon.stub(productService, 'findById').resolves(newProduct);
+      });
+      after(() => {
+        productService.findById.restore();
+      });
+      it('Testar se retorna com status 404 e mensagem de erro.', async () => {
+        await productController.update(request, response);
+
+        expect(response.status.calledWith(404)).to.be.equal(true);
+        expect(response.json.calledWith({ message: 'Product not found'})).to.be.equal(true);
+      });
+    });
+  });
+  describe('Testar rota de exclusão de produtos', () => {
+    const oldProduct = {
+      id: 1,
+      name: 'Martelo do Thor',
+    }
+    const response = {};
+    const request = {};
+    describe('Testar quando há produto para exclusão na base dados', () => {
+      before(() => {
+        request.params = { id: 1 }
+        request.body = {
+          name: "Martelo de Thor",
+          quantity: 10,
+        };
+        response.status = sinon.stub().returns(response);
+        response.json = sinon.stub().returns();
+        sinon.stub(productService, 'deleteProduct').resolves(oldProduct);
+      });
+      after(() => {
+        productService.deleteProduct.restore();
+      });
+      it('Verificar se retorna estatus 204', async () => {
+        await productController.deleteProduct(request, response);
+
+        expect(response.status.calledWith(204)).to.be.equal(true);
+      });
+    });
+    describe('Verificar resultado quando não há o produto a ser excluído', () => {
+      const newProduct = {
+        id: 5,
+        name: 'produto',
+        quantity: 10,
+      };
+      const response = {};
+      const request = {};
+      before(() => {
+        request.params = { id: 5 }
+        request.body = {
+          name: "Martelo de Thor",
+          quantity: 10,
+        };
+        response.status = sinon.stub().returns(response);
+        response.json = sinon.stub().returns();
+        sinon.stub(productService, 'findById').resolves(newProduct)
+      });
+      after(() => {
+        productService.findById.restore();
+      });
+      it('Verificar se retorna estatus 404 e mensagem de erro', async () => {
+        await productController.deleteProduct(request, response);
+
+        expect(response.status.calledWith(404)).to.be.equal(true);
+        expect(response.json.calledWith({ message: 'Product not found'})).to.be.equal(true);
+      });
+    });
   });
 });
+

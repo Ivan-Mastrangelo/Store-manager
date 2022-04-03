@@ -131,4 +131,26 @@ describe('verifica se as func. da service estão operacionais', () => {
       });
     });
   });
+  describe('Testar rota de exclusão de produtos', () => {
+    const oldProduct = {
+      id: 1,
+      name: 'Martelo do Thor',
+      quantity: 10,
+    }
+    describe('Testar quando há produto para exclusão na base dados', () => {
+      before(() => {
+        sinon.stub(productModel, 'findById').resolves(oldProduct);
+        sinon.stub(productModel, 'deleteProduct').resolves(oldProduct);
+      });
+      after(() => {
+        productModel.findById.restore();
+        productModel.deleteProduct.restore();
+      });
+      it('Verificar se produto foi excluído', async () => {
+        const result = await productService.deleteProduct(oldProduct);
+        console.log(result);
+        expect(result).to.be.equal(undefined);
+      })
+    })
+  })
 });
