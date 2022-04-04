@@ -26,7 +26,7 @@ const findById = async (id) => {
   FROM StoreManager.sales_products AS sp
   INNER JOIN StoreManager.sales AS s
   ON s.id = sp.sale_id
-  WHERE s.id = ?;`;
+  WHERE s.id = ?`;
 
   const [sale] = await connection.execute(query, [id]);
 
@@ -35,49 +35,23 @@ const findById = async (id) => {
   return sale.map(serialize);
 };
 
-const create = async ({ productId, quantity }) => {
-const [{ inserId: saleId }] = await connection.execute(`
-INSERT INTO StoreManager.sales (date) VALUES (?), [NOW()];
-`);
+const create = async (sales) => {
+const [{ insertId }] = await connection.execute(`
+INSERT INTO StoreManager.sales (date) VALUES (NOW())`);
 
-await Promise.all(itemsSold.map(async (product_id) => {
-  await connection.execute(`
-  INSERT INTO StoreManager.sales_products
-  (sale_id, product_id, quantity) VALUES (?, ?, ?),
-  [sale_id, productId, quantity];
-  `);
+await Promise.all(sales.map(async ({ productId, quantity }) => {
+  connection.execute(`INSERT INTO StoreManager.sales_products
+    (sale_id, product_id, quantity) VALUES (?, ?, ?);`,
+    [insertId, productId, quantity]);
 }));
-
-const sale_id = await salesModel.create({ productId, quantity });
   return {
-    saleId,
-    itemsSold: [
-      productId,
-      quantity,
-    ],
+    id: insertId,
+    itemsSold: sales,
   };
-};
-
-const update = async ({ id, productId, quantity }) => {
-  await connection.execute(
-    `UPDATE StoreManager.sales SET 
-      product_id = ?, quantity = ? WHERE id = ?;`,
-      [id, productId, quantity],
-  );
-  return {
-    saleId: id,
-    itemUpdated: [
-      {
-        productId,
-        quantity,
-      },
-    ],
-  };
-};
+}; // Requisito realizado com a ajuda do vídeo postado pelo professor Ricci, da trtbe e com ajuda do companheiro de turma Ary Barbosa.
 
 module.exports = {
   getAll,
   findById,
   create,
-  update,
 };
