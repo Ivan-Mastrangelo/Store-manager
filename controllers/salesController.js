@@ -18,8 +18,8 @@ const findById = async (req, res) => {
 
 const create = async (req, res) => {
   try {
-    const { productId, quantity } = req.body;
-    const newSale = await salesService.create({ productId, quantity });
+    // const { productId, quantity } = req.body;
+    const newSale = await salesService.create(req.body);
     return res.status(201).json(newSale);
   } catch (error) {
     return res.status(400).json({ message: 'Bad request' });
