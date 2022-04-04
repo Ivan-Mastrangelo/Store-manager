@@ -4,12 +4,14 @@ const productIdIn = (req, res, next) => {
   };
   
   const quantityExist = (req, res, next) => {
-    if (!req.body.quantity) return res.status(400).json({ message: '"quantity" is required' });
+    if (req.body.quantity === undefined) {
+      return res.status(400).json({ message: '"quantity" is required' });
+    }
     next();
   };
 
   const quantityplus = (req, res, next) => {
-    if (req.body.quantity < 1) {
+    if (req.body[0].quantity < 1) {
       return res.status(422).json({ message: '"quantity" must be greater than or equal to 1' });
     }
     next();

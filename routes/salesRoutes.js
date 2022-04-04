@@ -11,6 +11,6 @@ router.get('/:id', salesController.findById);
 
 router.post('/', salesController.create);
 
-router.put('/:id', salesController.update);
+router.put('/:id', productIdIn, quantityExist, quantityplus, salesController.update);
 
 module.exports = router;
