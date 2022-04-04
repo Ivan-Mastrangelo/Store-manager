@@ -38,23 +38,24 @@ const update = async (req, res) => {
   }
 };
 
-// const deleteSale = async (req, res) => {
-//   console.log(req.params);
-//   try {
-//     const { id } = req.params;
+const deleteSale = async (req, res) => {
+  console.log(req.params);
+ 
+  try {
+    const { id } = req.params;
+    console.log(typeof id);
+    await salesService.deleteSale(id);
 
-//     await salesService.deleteSale(id);
-
-//     return res.status(204).end();
-//   } catch (error) {
-//     return res.status(404).json({ message: error.message });
-//   }
-// };
+    return res.status(204).end();
+  } catch (error) {
+    return res.status(404).json({ message: error.message });
+  }
+};
 
 module.exports = {
   getAll,
   findById,
   create,
   update,
-  // deleteSale,
+  deleteSale,
 };
