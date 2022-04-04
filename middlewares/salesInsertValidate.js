@@ -1,10 +1,10 @@
 const productIdIn = (req, res, next) => {
-    if (!req.body.poductId) return res.status(400).json({ message: '"productId" is required' });
+    if (!req.body[0].poductId) return res.status(400).json({ message: '"productId" is required' });
     next();
   };
   
   const quantityExist = (req, res, next) => {
-    if (req.body.quantity === undefined) {
+    if (req.body[0].quantity === undefined) {
       return res.status(400).json({ message: '"quantity" is required' });
     }
     next();
