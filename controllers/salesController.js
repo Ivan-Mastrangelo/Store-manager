@@ -29,9 +29,8 @@ const create = async (req, res) => {
 const update = async (req, res) => {
   try {
     const { id } = req.params;
-    const { productId, quantity } = req.body;
 
-    const readyUp = await salesService.update({ id, productId, quantity });
+    const readyUp = await salesService.update(req.body, id);
 
     return res.status(200).json(readyUp);
   } catch (error) {

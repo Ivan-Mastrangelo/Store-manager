@@ -50,8 +50,30 @@ await Promise.all(sales.map(async ({ productId, quantity }) => {
   };
 }; // Requisito realizado com a ajuda do vídeo postado pelo professor Ricci, da trtbe e com ajuda do companheiro de turma Ary Barbosa.
 
+const update = async (id, productId, quantity) => {
+  console.log(productId, quantity, id);
+  await connection.execute(
+    `UPDATE StoreManager.sales
+    SET date = NOW() WHERE id = ?;`, [id],
+  );
+  await connection.execute(
+    `UPDATE StoreManager.sales_products SET
+      product_id = ?, quantity = ? WHERE sale_id = ?;`,
+      [productId, quantity, id],
+  ); return {
+    saleId: id,
+    itemUpdated: [
+      {
+        productId,
+        quantity,
+      },
+    ],
+  };
+};
+
 module.exports = {
   getAll,
   findById,
   create,
+  update,
 };
