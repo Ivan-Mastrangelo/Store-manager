@@ -9,4 +9,4 @@ const createValidate = async (searchname) => {
   return false;
 };
 
-module.exports = createValidate;
+module.exports = { createValidate };

@@ -1,5 +1,5 @@
 const productModel = require('../models/productModel');
-const createValidate = require('../helpers/createValidate');
+const helper = require('../helpers/createValidate');
 
 const getAll = async () => {
   const products = await productModel.getAll();
@@ -16,7 +16,7 @@ const findById = async (id) => {
 };
 
 const create = async ({ name, quantity }) => {
-  const check = await createValidate(name);
+  const check = await helper.createValidate(name);
 
   if (check === false) throw Error('Product already exists');
 
