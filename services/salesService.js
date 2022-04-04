@@ -32,9 +32,18 @@ const update = async (saleUp, id) => {
   return readyUp;
 };
 
+// const deleteSale = async (id) => {
+//   const getSale = await salesModel.findById(id);
+//   console.log(getSale);
+//   if (!getSale) throw Error('Sale not found');
+  
+//   await salesModel.deleteSale(getSale.id);
+// };
+
 module.exports = {
   getAll,
   findById,
   create,
   update,
+  // deleteSale,
 };
