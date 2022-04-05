@@ -1,6 +1,25 @@
 const salesModel = require('../models/salesModel');
 const updateProductForSales = require('../helpers/updateProductForSales');
 const productDeleteSaleUpdate = require('../helpers/productDeleteSaleUpdate');
+const productModel = require('../models/productModel');
+const UnprocessableEntity = require('../errors/UnprocessableEntity');
+
+const validateSale = async (sales) => {
+  const verify = await Promise.all(sales.map(async ({ productId, quantity: saleQuantity }) => {
+    const getProduct = await productModel.findById(productId);
+    const { quantity: oldQuantity } = getProduct;  
+    // console.log(oldQuantity);
+    if (oldQuantity <= 0 || saleQuantity > oldQuantity) {
+    return false;
+    }
+    return true;
+  }));
+  // console.log(verify);
+  // console.log(verify.every((el) => el === true));
+  return verify.every((el) => el === true);
+};
+
+// throw UnprocessableEntity('Such amount is not permitted to sell');
 
 const getAll = async () => {
   const sales = await salesModel.getAll();
@@ -15,11 +34,16 @@ const findById = async (id) => {
 };
 
 const create = async (sales) => {
-  const newSale = await salesModel.create(sales);
+  const validate = await validateSale(sales);
 
-  await updateProductForSales(sales);
-
-  return newSale;
+  if (validate) {
+    const newSale = await salesModel.create(sales);
+  
+    await updateProductForSales(sales);
+  
+    return newSale;
+  }
+  if (!validate) throw UnprocessableEntity('Such amount is not permitted to sell');
 };
 
 const update = async (saleUp, id) => {
@@ -31,11 +55,17 @@ const update = async (saleUp, id) => {
   
   if (!getSale) throw Error('Product not found');
 
-  await updateProductForSales(saleUp);
-  
-  const readyUp = await salesModel.update(id, saleUp);
+  const validate = await validateSale(saleUp);
+  console.log(validate);
+  if (!validate) throw UnprocessableEntity('Such amount is not permitted to sell');
 
-  return readyUp;
+  if (validate) {
+    await updateProductForSales(saleUp);
+    
+    const readyUp = await salesModel.update(id, saleUp);
+  
+    return readyUp;
+  }
 };
 
 const deleteSale = async (id) => {
@@ -51,4 +81,5 @@ module.exports = {
   create,
   update,
   deleteSale,
+  validateSale,
 };

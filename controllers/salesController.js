@@ -18,11 +18,10 @@ const findById = async (req, res) => {
 
 const create = async (req, res) => {
   try {
-    // const { productId, quantity } = req.body;
     const newSale = await salesService.create(req.body);
     return res.status(201).json(newSale);
   } catch (error) {
-    return res.status(400).json({ message: 'Bad request' });
+    return res.status(error.statusCode).json({ message: error.message });
   }
 };
 
@@ -37,6 +36,7 @@ const update = async (req, res) => {
     return res.status(400).json({ message: error.message });
   }
 };
+// return res.status(error.code).json({ message: error.message });
 
 const deleteSale = async (req, res) => { 
   try {
