@@ -92,24 +92,6 @@ describe('verifica se as func. da service estão operacionais', () => {
         expect(result).to.include.all.keys('id', 'name', 'quantity');
       });
     });
-    // describe('Testar casos de erro de validação ao inserir nov produto', () => {
-    //   const oldProduct = {
-    //     id: 1,
-    //     name: "Martelo de Thor",
-    //     quantity: 10
-    //   }
-    //   before(() => {
-    //     sinon.stub(productModel, 'findById').resolves(true);
-    //   });
-    //   after(() => {
-    //     productModel.findById.restore();
-    //   });
-    //   it('Testar se retorna mensagem de erro', async () => {
-    //     const result = await productService.create(oldProduct);
-    //     console.log(result);
-    //     expect(result).to.be.equal({ message: 'Product already exists'});
-    //   });
-    // });
     describe('Testar a camada productService ao atualizar produto com sucesso', () => {
       const prodUpdate = {
         id: 1,
