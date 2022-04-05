@@ -13,8 +13,6 @@ const findById = async (id) => {
 
   const [product] = await connection.execute(query, [id]);
 
-  // if (product.length === 0) return null;
-
   return product[0];
 };
 
