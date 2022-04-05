@@ -1,4 +1,6 @@
 const salesModel = require('../models/salesModel');
+const updateProductForSales = require('../helpers/updateProductForSales');
+const productDeleteSaleUpdate = require('../helpers/productDeleteSaleUpdate');
 
 const getAll = async () => {
   const sales = await salesModel.getAll();
@@ -15,28 +17,31 @@ const findById = async (id) => {
 const create = async (sales) => {
   const newSale = await salesModel.create(sales);
 
+  await updateProductForSales(sales);
+
   return newSale;
 };
 
 const update = async (saleUp, id) => {
-  const [{ productId, quantity }] = saleUp;
-
+  const [{ quantity }] = saleUp;
+  
   if (quantity < 1) throw Error('"quantity" must be greater than or equal to 1');
   
   const getSale = await salesModel.findById(id);
- 
+  
   if (!getSale) throw Error('Product not found');
 
-  const readyUp = await salesModel.update(id, productId, quantity);
+  await updateProductForSales(saleUp);
+  
+  const readyUp = await salesModel.update(id, saleUp);
 
   return readyUp;
 };
 
 const deleteSale = async (id) => {
   const getSale = await salesModel.findById(id);
-  console.log(getSale);
   if (!getSale) throw Error('Sale not found');
-  
+  await productDeleteSaleUpdate(id);
   await salesModel.deleteSale(id);
 };
 

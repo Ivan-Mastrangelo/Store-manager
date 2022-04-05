@@ -29,7 +29,7 @@ const create = async (req, res) => {
 const update = async (req, res) => {
   try {
     const { id } = req.params;
-
+    
     const readyUp = await salesService.update(req.body, id);
 
     return res.status(200).json(readyUp);
@@ -38,12 +38,10 @@ const update = async (req, res) => {
   }
 };
 
-const deleteSale = async (req, res) => {
-  console.log(req.params);
- 
+const deleteSale = async (req, res) => { 
   try {
     const { id } = req.params;
-    console.log(typeof id);
+
     await salesService.deleteSale(id);
 
     return res.status(204).end();
