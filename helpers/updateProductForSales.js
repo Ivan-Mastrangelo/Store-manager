@@ -16,3 +16,4 @@ const updateProductForSales = async (saleUp) => {
 };
 
 module.exports = updateProductForSales;
+// Lógica desenvolvida em conjunto com o monitor Vinicius dionysio, da mentoria summer.
