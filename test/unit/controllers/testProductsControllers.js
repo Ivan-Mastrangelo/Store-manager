@@ -3,7 +3,6 @@ const productController = require('../../../controllers/productController');
 const productService = require('../../../services/productService');
 const sinon = require('sinon');
 const { request } = require('express');
-const connection = require('../../../models/connection');
 const helper = require('../../../helpers/createValidate');
 const productModel = require('../../../models/productModel')
 
@@ -125,12 +124,12 @@ describe('verifica se as func. da camada controller estão operacionais', () => 
         };
         response.status = sinon.stub().returns(response);
         response.json = sinon.stub().returns();
-        sinon.stub(connection, 'execute').resolves(false);
-        sinon.stub(helper, 'createValidate').resolves(false);
+        sinon.stub(productService, 'create').throws(Error('Product already exists'));
+        // sinon.stub(helper, 'createValidate').resolves(false);
       });
       after(() => {
-        helper.createValidate.restore();
-        connection.execute.restore();
+        // helper.createValidate.restore();
+        productService.create.restore();
       });
       it('Verificar se retorna o status 409 e a mensagem de erro', async () => {
         await productController.create(request, response);
@@ -169,17 +168,17 @@ describe('verifica se as func. da camada controller estão operacionais', () => 
         };
         response.status = sinon.stub().returns(response);
         response.json = sinon.stub().returns();
-        sinon.stub(productModel, 'findById').resolves(false);
+        sinon.stub(productService, 'update').throws(Error('Product not found'));
       });
       after(() => {
-        productModel.findById.restore();
+        productService.update.restore();
       });
       it('Testar se retorna com status 404 e mensagem de erro.', async () => {
         await productController.update(request, response);
-        const teste = response.json.lastCall.args[0];
+        // const teste = response.json.lastCall.args[0];
         expect(response.status.calledWith(404)).to.be.equal(true);
-        // expect(response.json.calledWith({ message: 'Product not found'})).to.be.equal(true);
-        expect(teste.message).to.be.equal('Product not found');
+         expect(response.json.calledWith({ message: 'Product not found'})).to.be.equal(true);
+        // expect(teste.message).to.be.equal('Product not found');
       });
     });
   });
@@ -226,10 +225,10 @@ describe('verifica se as func. da camada controller estão operacionais', () => 
         };
         response.status = sinon.stub().returns(response);
         response.json = sinon.stub().returns();
-        sinon.stub(productModel, 'findById').resolves(false)
+        sinon.stub(productService, 'deleteProduct').throws(Error('Product not found'));
       });
       after(() => {
-        productModel.findById.restore();
+        productService.deleteProduct.restore();
       });
       it('Verificar se retorna estatus 404 e mensagem de erro', async () => {
         await productController.deleteProduct(request, response);

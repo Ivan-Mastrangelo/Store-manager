@@ -4,7 +4,6 @@ const productService = require('../../../services/productService');
 const sinon = require('sinon');
 const { boolean } = require('joi');
 const createValidate = require('../../../helpers/createValidate');
-const connection = require('../../../models/connection');
 const helper = require('../../../helpers/createValidate');
 
 describe('verifica se as func. da service estão operacionais', () => {
@@ -77,7 +76,6 @@ describe('verifica se as func. da service estão operacionais', () => {
     };
     describe('Testar a camada productService ao inserir um novo produto com sucesso', () => {
       before(() => {
-        // sinon.stub(connection, 'execute').resolves();
         sinon.stub(helper, 'createValidate').resolves(true);
         sinon.stub(productModel, 'create').resolves(newProduct);
       });
