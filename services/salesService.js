@@ -8,18 +8,14 @@ const validateSale = async (sales) => {
   const verify = await Promise.all(sales.map(async ({ productId, quantity: saleQuantity }) => {
     const getProduct = await productModel.findById(productId);
     const { quantity: oldQuantity } = getProduct;  
-    // console.log(oldQuantity);
     if (oldQuantity <= 0 || saleQuantity > oldQuantity) {
     return false;
     }
     return true;
   }));
-  // console.log(verify);
-  // console.log(verify.every((el) => el === true));
+
   return verify.every((el) => el === true);
 };
-
-// throw UnprocessableEntity('Such amount is not permitted to sell');
 
 const getAll = async () => {
   const sales = await salesModel.getAll();
@@ -56,7 +52,6 @@ const update = async (saleUp, id) => {
   if (!getSale) throw Error('Product not found');
 
   const validate = await validateSale(saleUp);
-  console.log(validate);
   if (!validate) throw UnprocessableEntity('Such amount is not permitted to sell');
 
   if (validate) {
